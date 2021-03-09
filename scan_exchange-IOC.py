@@ -53,7 +53,7 @@ info:
   severity: critical
   reference: 
     - https://twitter.com/tanmayg/status/1369125158481399809
-    - 
+    - https://twitter.com/zero_B_S/status/1369289560493064192
   tags: exploits, exchange, ioc
 
 requests:
