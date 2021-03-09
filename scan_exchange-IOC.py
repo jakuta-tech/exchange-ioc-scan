@@ -45,10 +45,10 @@ for ioc in ioc_json:
 
 
 nuclei_yaml_txt_header = """
-id: CVE-2021-2855
+id: CVE-2021-26855
 
 info:
-  name: CVE-2021-2855-IOC-Scan
+  name: CVE-2021-26855-IOC-Scan
   author: zeroBS 
   severity: critical
   reference: 
