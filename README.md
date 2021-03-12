@@ -59,7 +59,7 @@ scan in action:
 
 # Changelog
 
-v0.4 2021-02-12 
+v0.4 2021-03-12 
   - generate new scan_file only if new IOCs found
   - use private IOCs for private scans (skipping the check for new IOCs)
   
