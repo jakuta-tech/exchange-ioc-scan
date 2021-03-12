@@ -24,11 +24,24 @@ workflow is as follows:
 
 using private IOCs additionally:
 - place a file called "private.iocs" into this directory
-- put one path below docroot on each line (will get expanded to {{BaseURL}}/your/ioc/path/to/webshell.aspx
+- put one websehll on each line;: the pathes will get expanded to well-known locations, e.g.
+    - {{BaseURL}}/aspnet_client/webshell.aspx
+    - {{BaseURL}}/owa/auth/webshell.aspx
 - check your `scan_exchange_ioc-current.yaml` - in the section below comment 
   # private_iocs
-- please not: a check if new IOCs are online will be skipped (as of v0.4), thus each time a new scan_template is generated 
+- please not: a check for new IOCs online will be skipped (as of v0.4), thus each time a new scan_template is generated 
 
+
+example:
+
+~~~
+# private.iocs
+
+shellA.aspx
+ShellB.aspx
+DssQQ21.aspx
+
+~~~
   
 
 scan in action:
