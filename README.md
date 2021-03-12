@@ -6,8 +6,12 @@ a script to generate a YAML-Scan-file (nuclei-template) for
 based on [IOCs released by Microsoft](https://twitter.com/tanmayg/status/1369125158481399809)
 on observed Webshells.
 
-the scanfile will detect implanted webshells, if known so far as IOC,  
-and can update the scanfile if new IOCs are found
+![exe-cute](exe-cute.png)
+
+
+
+the scanfile will detect implanted webshells, if known so far as IOC, or given as
+private IOCs, and can update the scanfile if new IOCs are found
 
 
 workflow is as follows:
@@ -24,9 +28,11 @@ workflow is as follows:
 
 using private IOCs additionally:
 - place a file called "private.iocs" into this directory
-- put one websehll on each line;: the pathes will get expanded to well-known locations, e.g.
+- put one webshell.aspx on each line; if the path does not contain a "/",  pathes will get expanded to well-known locations, e.g.
     - {{BaseURL}}/aspnet_client/webshell.aspx
     - {{BaseURL}}/owa/auth/webshell.aspx
+- if the path contains a "/" liek owa/auth/yourprivatewebshell.aspx, this path will be taken as path beneath `{{BaseURL}}`
+
 - check your `scan_exchange_ioc-current.yaml` - in the section below comment 
   # private_iocs
 - please not: a check for new IOCs online will be skipped (as of v0.4), thus each time a new scan_template is generated 
