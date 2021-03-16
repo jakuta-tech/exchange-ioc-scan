@@ -130,3 +130,6 @@ dmypy.json
 
 *.yaml*
 *.yml*
+*.json
+private*
+  
