@@ -2,7 +2,7 @@
 #
 #
 
-this_v = "0.4 2021-03-12"
+this_v = "0.7 2021-03-16"
 
 
 # getting latest IOCs
@@ -36,13 +36,15 @@ yaml_file = "scan_exchange_ioc-%s.yaml" % ioc_ts
 yaml_current = "scan_exchange_ioc-current.yaml" 
 private_ioc_file = "private.iocs"
 repo_link = "https://github.com/zer010bs/exchange-ioc-scan"
-
+local_ioc_file = "local.iocs"
 
 # known locations to iterate over for private.iocs
+
 
 known_locations = [
   "owa/auth",
   "aspnet_client", 
+  "OAB", 
   
 
 ]
@@ -90,7 +92,7 @@ if len(sys.argv) > 1:
 #
 #
 
-print("> loading IOCs")
+print("> loading public IOCs")
 
 ioc_req = requests.get(latest_iocs, verify = False)
 
@@ -99,17 +101,19 @@ ioc_req = requests.get(latest_iocs, verify = False)
 
 ioc_json = ioc_req.json()
 
-filepath_iocs = []
+public_iocs = []
 private_iocs = []
+local_iocs = []
+
 
 for ioc in ioc_json:
   if ioc["IndicatorType"] == "filepath":
    if ioc["Indicator"].find("""HttpProxy\\owa\\""") > -1:
      docroot_path = ioc["Indicator"].split("""HttpProxy\\""")[1].replace("\\", "/")
-     filepath_iocs.append(docroot_path)
+     public_iocs.append(docroot_path) 
    elif ioc["Indicator"].find("""C:\\inetpub\\wwwroot\\""") > -1:
      docroot_path = ioc["Indicator"].split("""wwwroot\\""")[1].replace("\\", "/")
-     filepath_iocs.append(docroot_path)
+     public_iocs.append(docroot_path)
 
 # check for private iocs / check if new iocs available
 
@@ -123,7 +127,7 @@ if not os.path.isfile(private_ioc_file):
   else:
     loaded_ioc_len = 0
   
-  curr_ioc_len = len(filepath_iocs)
+  curr_ioc_len = len(public_iocs)
   
   if curr_ioc_len == loaded_ioc_len:
     print("no new IOCs to load, not writing a new scan_yaml")
@@ -141,12 +145,35 @@ else:
   with open(private_ioc_file, "r") as pi:
     for line in pi:
       line = line.strip()
+      if len(line) > 1:
+        if line[0] == "#": # we can haz comments
+          continue
+      else:
+        continue 
       for kl in known_locations:
         kl_path = "%s/%s" % (kl, line)
-        if kl_path in filepath_iocs:
+        if kl_path in public_iocs:
           print("> skipping %s, already in public IOCs" % (line))
         else:
           private_iocs.append(kl_path)
+
+if os.path.isfile(local_ioc_file):
+  print("> loading local IOCs")
+  with open(local_ioc_file, "r") as li:
+    for line in li:
+      line = line.strip()
+      if len(line) > 1:
+        if line[0] == "#": # we can haz comments
+          continue
+      else:
+        continue 
+      for kl in known_locations:
+        kl_path = "%s/%s" % (kl, line)
+        if kl_path in public_iocs:
+          print("> skipping %s, already in public IOCs" % (line))
+        else:
+          local_iocs.append(kl_path)
+
 
 print("""
 
@@ -154,8 +181,9 @@ loaded IOCs to write to scanfile
 
 public  : %s
 private : %s
+local   : %s
 
-""" %  (len(filepath_iocs), len(private_iocs)))
+""" %  (len(public_iocs), len(private_iocs), len(local_iocs)))
 
 
 # saving curr_IOCs 
@@ -189,14 +217,25 @@ nuclei_yaml_txt_footer = """
 """
 
 
-
 with open(yaml_file, "w") as yf:
   yf.write(nuclei_yaml_txt_header)
-  for ioc in filepath_iocs:
+  for ioc in public_iocs:
     yf.write("""      - "{{BaseURL}}/%s" \n""" % ioc)
+  if len(local_iocs) > 0:
+    yf.write("""      # local (but yet public) IOCs \n""" )
+    for ioc in local_iocs:
+      ioc = ioc.strip()
+      if ioc[0] == "#":
+        # this is a comment
+        continue
+      yf.write("""      - "{{BaseURL}}/%s" \n""" % ioc)
   if len(private_iocs) > 0:
     yf.write("""      # private IOCs \n""" )
     for ioc in private_iocs:
+      ioc = ioc.strip()
+      if ioc[0] == "#":
+        # this is a comment
+        continue
       yf.write("""      - "{{BaseURL}}/%s" \n""" % ioc)
     
   yf.write(nuclei_yaml_txt_footer)
@@ -205,6 +244,6 @@ print("""
 
 > wrote [ %s ] Webshell/IOCs to %s
 
-""" % (( len(filepath_iocs) + len(private_iocs)), yaml_file))
+""" % (( len(public_iocs) + len(private_iocs) + len(local_iocs)), yaml_current))
 
 shutil.copyfile(yaml_file, yaml_current)
