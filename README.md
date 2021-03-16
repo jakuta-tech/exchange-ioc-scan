@@ -4,7 +4,12 @@
 a script to generate a YAML-Scan-file (nuclei-template) for 
 [nuclei-scanner](https://github.com/projectdiscovery/nuclei) 
 based on [IOCs released by Microsoft](https://twitter.com/tanmayg/status/1369125158481399809)
-on observed Webshells.
+and local.iocs (public as well, see comments in the file) 
+from various websites on observed Webshells.
+
+you can add your private.iocs as well (see below)
+
+
 
 ![exe-cute](exe-cute.png)
 
@@ -17,6 +22,7 @@ private IOCs, and can update the scanfile if new IOCs are found
 workflow is as follows:
 
 - Download a internet-wide search for OWA-hosts
+
 - generate a current nuclei-template-file with `scan_exchange-IOC.py`:
     - this willdownload the current IOC-json from Micrsosoft
     - then generate nuclei-template file called `scan_exchange_ioc-current.yaml` (a backup is safed on each run in `scan_exchange_ioc-$TIMESTAMP.yaml`
@@ -58,6 +64,16 @@ scan in action:
 
 
 # Changelog
+
+v0.7 2021-03-17
+  - added local.iocs from https://us-cert.cisa.gov/ncas/current-activity/2021/03/13/updates-microsoft-exchange-server-vulnerabilities
+  
+
+v0.6 2021-03-15
+  - added new known_locations based on CISA-IOCs
+  - added cisa.iocs
+  - you can have commens in ioc - files 
+  
 
 v0.4 2021-03-12 
   - generate new scan_file only if new IOCs found
