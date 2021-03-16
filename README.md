@@ -5,9 +5,9 @@ a script to generate a YAML-Scan-file (nuclei-template) for
 [nuclei-scanner](https://github.com/projectdiscovery/nuclei) 
 based on [IOCs released by Microsoft](https://twitter.com/tanmayg/status/1369125158481399809)
 and local.iocs (public as well, see comments in the file) 
-from various websites on observed Webshells.
+from various sources on observed Webshells.
 
-you can add your private.iocs as well (see below)
+you can add your private.iocs if necessary (see below)
 
 
 
