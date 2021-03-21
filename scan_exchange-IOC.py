@@ -44,7 +44,6 @@ local_ioc_file = "local.iocs"
 known_locations = [
   "owa/auth",
   "aspnet_client", 
-  "OAB", 
   
 
 ]
@@ -153,7 +152,8 @@ else:
       for kl in known_locations:
         kl_path = "%s/%s" % (kl, line)
         if kl_path in public_iocs:
-          print("> skipping %s, already in public IOCs" % (line))
+          # ~ pass
+          print("  > skipping %s, already in public IOCs" % (line))
         else:
           private_iocs.append(kl_path)
 
@@ -170,7 +170,7 @@ if os.path.isfile(local_ioc_file):
       for kl in known_locations:
         kl_path = "%s/%s" % (kl, line)
         if kl_path in public_iocs:
-          print("> skipping %s, already in public IOCs" % (line))
+          print("  > skipping %s, already in public IOCs" % (line))
         else:
           local_iocs.append(kl_path)
 
@@ -243,6 +243,8 @@ with open(yaml_file, "w") as yf:
 print("""
 
 > wrote [ %s ] Webshell/IOCs to %s
+
+> happy hunting
 
 """ % (( len(public_iocs) + len(private_iocs) + len(local_iocs)), yaml_current))
 
