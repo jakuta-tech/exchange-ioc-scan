@@ -2,7 +2,7 @@
 #
 #
 
-this_v = "0.7 2021-03-16"
+this_v = "0.8 2021-03-16"
 
 
 # getting latest IOCs
