@@ -2,7 +2,7 @@
 #
 #
 
-this_v = "0.8 2021-03-16"
+this_v = "0.11 2021-08-18"
 
 
 # getting latest IOCs
@@ -44,6 +44,9 @@ local_ioc_file = "local.iocs"
 known_locations = [
   "owa/auth",
   "aspnet_client", 
+  "aspnet_client/system_web",
+  "ecb", # proxyshell, by HUNTRESSLABS
+  #"OAB", seems not valid 
   
 
 ]
@@ -61,22 +64,23 @@ print("""
                                 ____________
                                /            \\
                               /  __________  \\
-                             /  /        _/\  \\
-                            |  /       _/   \  |
-                            | |      _/      | |
+ Exchange-Backdoor-Scan      /  /        _/\  \\
+  CVE-2021-26855            |  /       _/   \  |
+    > ProxyLogon            | |      _/      | |
+  CVE-2021-34473            | |     |        | |
+    > ProxyShell            | |     |        | |
+                            | |     | O      | |
+                            | |     | .      | |
+  IOCs by various groups,   | |     |        | |
+     see Credits            | |     |        | |
                             | |     |        | |
                             | |     |        | |
- Exchange-Backdoor-Scan     | |     | O      | |
-  CVE-2021-26855            | |     | .      | |
-  IOCs by MS                | |     |        | |
-                            | |     |        | |
-  (c) 2021 zeroBS           | |     |        | |
-      https://zero.bs       | |     |        | |
                             | |     |___     | |
                             | |         \____| |
                     -----------------------------------
-
-    version : %s
+> (c) 2021 zeroBS 
+> https://zero.bs
+  version : %s
 
 """ % (this_v))
 
@@ -193,7 +197,7 @@ with open(current_iocs, "w") as cioc:
 
 
 nuclei_yaml_txt_header = """
-id: CVE-2021-26855
+id: CVE-2021-26855-IOC-Scan
 
 info:
   name: CVE-2021-26855-IOC-Scan
@@ -210,10 +214,20 @@ requests:
 """
 
 nuclei_yaml_txt_footer = """
+    matchers-condition: and
     matchers:
       - type: status
         status:
           - 200
+      - type: word
+        words:
+          - "OAB (Default Web Site)"
+          - "var search = win.location.search;"
+          - "<!-- OwaPage = ASP.auth_error_aspx -->"
+          - "<!-- OwaPage = ASP.auth_errorfe_aspx -->"
+        condition: or
+        part: body
+
 """
 
 
